@@ -1,0 +1,18 @@
+% !TEX root = ../main.tex
+Modern data collection is increasingly focused on recording data continuously over various domains of interest, including time or space.  
+Many times, this collected data are more appropriately viewed as realizations of a function rather than finite-dimensional vectors.  
+This has led to the development and rise of functional data analysis (FDA).  
+FDA extends classical statistical models to handle infinitely dimensional data.  
+FDA represents each observational unit, be it a growth curve, temperature history, or kinematic motion, as a smooth function defined on an interval.  
+Modeling these data as functions has several attractive characteristics, including allowing for the ability to capture nonlinear behaviors naturally, but it also presents several challenges.  
+These challenges include how to represent an infinitely dimensional object finitely, a tradeoff between smoothness and sparsity, as well as how to handle covariance structures.
+There are many problems that appear when this topic is presented.  
+One of these is functional regression, in particular, function on scalar regression (FoS).  In FoS models, the response, or dependent variable, is a function rather than a scalar.  
+The goal of FoS models is to capture the relationship between entire functions.  
+Some examples of this may be the modeling of a kinematic trajectory (presumed a curve) conditional on various covariates or modeling growth curves in response to environmental factors.  
+
+My work builds on existing foundations to estimate coefficient curves in FoS regression.  
+In Section 2, I will present a partial history of statistics, detailing significant developments and how they laid the foundation for functional data analysis.  
+In Section 3, I provide some background on Bayesian methods specifically.  
+Section 4 presents a specific existing model that serves as a building block for future methods.  
+Section 5 presents the multivariate model, allowing for the estimation of multivariate functional outcomes.   

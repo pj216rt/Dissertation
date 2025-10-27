@@ -1,0 +1,77 @@
+\RequirePackage{etoolbox}
+\makeatletter
+\@ifundefined{theHmusex}{}{\let\theHmusex\relax}
+\makeatother
+
+\documentclass[11pt,expanded,copyright]{template/fsuthesis}
+
+\usepackage{amsmath}
+\usepackage[american]{babel}
+\usepackage{csquotes}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{bib/references.bib}
+
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+
+\title{Bayesian Hierarchical Multivariate Function on Scalar Regression}
+\author{Palmer Swanson}
+\college{College of Arts and Sciences}
+\department{Department of Statistics}
+\manuscripttype{Dissertation}  
+\degree{Doctor of Philosophy}
+\degreeyear{2026}
+\defensedate{Decmeber XX, 2026}
+
+% Committee (use \committeeperson{Name}{Role})
+\committeeperson{Advisor Name}{Professor Directing Dissertation}
+\committeeperson{Member Two}{University Representative}
+\committeeperson{Member Three}{Committee Member}
+\committeeperson{Member Four}{Committee Member}
+\committeeperson{Member Five}{Committee Member}
+
+% Optional tweaks like in the sample
+\widowpenalty=9999
+\clubpenalty=9999
+
+% If you want the ToC title to match sample's wording:
+\addto\captionsamerican{\renewcommand*{\contentsname}{Table of Contents}}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\makecommitteepage
+
+% Optional sample front-matter pages:
+\begin{dedication}\centering To my parents.\end{dedication}
+\begin{acknowledgments}Thanks to ...\end{acknowledgments}
+
+\tableofcontents
+\listoftables
+\listoffigures
+% \listofmusex % only if you actually have musical examples
+
+\begin{abstract}
+Write your abstract here.
+\end{abstract}
+
+\mainmatter
+
+\chapter{Introduction}
+\input{chapters/chapter1.tex}  % create this file; see below
+
+\chapter{History}
+\input{chapters/chapter2}  % create as needed
+
+\chapter{Functional Data Analysis and Regression}
+
+
+\renewcommand*{\bibname}{References}
+\printbibliography
+
+\begin{biosketch}
+Your biosketch text here (no personal contact info).
+\end{biosketch}
+
+\end{document}

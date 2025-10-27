@@ -1,0 +1,25 @@
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.lof
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.nav
+*.snm
+
+main.pdf
+
+# IDE cruft
+.vscode/
+*.code-workspace
+
+# OS cruft
+.DS_Store
+Thumbs.db

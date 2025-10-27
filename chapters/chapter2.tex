@@ -1,0 +1,106 @@
+% !TEX root = ../main.tex
+Statistics is the science of collecting, analyzing, presenting, and interpreting data.  
+It has developed gradually, shaped by the contributions of individuals over centuries.
+
+In the 17th century, John Graunt pored over London's bills of mortality.  
+He counted the dead from plague, weighted the births of boys against those of girls, and scratched out a rough table of life and death\cite{glass_john_1964}.
+
+Many argue that from this ledger, came what we now call statistics.
+
+Not far behind him came Pascal and Fermat, talking of wagers and chance.  
+In their letters were the seeds of probability\cite{fienberg_review_1992}.  
+Huygen then planted these in algebra.  
+Then Bernoulli in his book \emph{Ars Conjectandi}\footnote{The Art of Conjecturing}, gave the world expected values, the law of large numbers, and a radical idea that uncertainty could exist not just on earth, but in ones mind. 
+
+Abraham de Moivre, a French Protestant refugee living in England continued the development.  
+He published the first true textbook on probability, titled \emph{The Doctrine of Chances}in which he showed that the normal distribution can approximate the binomial\cite{fienberg_review_1992}.    
+This result remains foundational in probability theory.  
+Years later, this would be known as a special case of the central limit theorem, bearing his name.  
+Also in the book was an idea that would lay the foundation for Bayesian statistics.  
+
+Thomas Bayes was a minister.  He only published two works during his life.  
+After his death a third \emph{An Essay Towards Solving a Problem in the Doctrine of Chances} was published asking how one may determine the probability of an event from what has already been observed.  
+This would come to be known as Bayes' Theorem.  
+Laplace took this, refined it, polished it, formalized it, and based it in mathematics.  Bayesian inference was born.  
+
+At the turn of the 19th century, a new tool appeared: the method of least squares.  
+Who discovered it first is subject to debate.  
+Some say Gauss invented it first as he studied planetary motion.  
+Others say it was developed by Legendre first.  
+Historians continue to argue the point\cite{plackett_studies_1972}\cite{stigler_history_1986}.
+Around the same time, Laplace continued to develop Bayesian thought; he expressed Bayes rule in its modern form (with integrals).
+
+Laplace also contributed to the philosophy of statistics.  
+He imagined some intellect large enough to know every force and the position of every object:
+
+\begin{displayquote} “We may regard the present state of the universe as the effect of its past and the cause of its future. 
+    An intellect which at a certain moment would know all forces that set nature in motion, and all positions of all items 
+    of which nature is composed, if this intellect were also vast enough to submit these data to analysis, 
+    it would embrace in a single formula the movements of the greatest bodies of the universe 
+    and those of the tiniest atom; for such an intellect nothing would be uncertain, 
+    and the future just like the past would be the present to it.”
+\end{displayquote}
+
+This vision of certainty was carried into statistics.  
+Frequentists would postulate an objective truth that can be revealed with sufficient data data.  
+With enough trials, chance or randomness would vanish.  
+
+The work of Gauss, Legendre, and Laplace shaped statistics from simple counts, tallies, and observations into rigorous theory.  
+Attached to theory were tools, equations, and philosophy.  
+From this came statistical models, with which we are familiar today. 
+
+In England, Francis Galton studied the heights of parents and their children.  
+He saw a pull toward the average: a "regression" that tied generations together\cite{fienberg_review_1992}.  
+The idea of correlation or association, came from this.  
+Karl Pearson, Galton's student formalized this idea\cite{stanton_galton_2001}.  
+Regression and correlation formed the heart of statistics\cite{stanton_galton_2001}.
+
+Karl Pearson left his mark on almost every corner of statistics.  
+The \(\chi^2\) test, principal components, the method of moments, and even hypothesis testing can be traced back to him.  
+With this work, the start if the 20th century began.  
+
+Then came R.A. Fisher.  In 1925, he published \emph{Statistical Methods for Research Workers}.  
+This book introduced statistics to a wide variety of fields of study.  
+Of note, he introduced the concept of the p-value, with its famous cutoff at 1 in 20.  
+The world has argued over this ever since\cite{ranstam_why_2012}.
+
+Fisher fought against the Bayesian paradigm.  He called it an error, too enmeshed with the scale invariant uniform prior\cite{zabell_fisher_2022}.  
+To Fisher, inference should rely solely on the likelihood function and the data, not a subjective belief.  
+And so the split grew: Bayes on one side, Fisher (and others), on the other.  
+A great fault appeared, one that still exists today.  
+
+After Fisher came Jerzy Neyman and Egan Pearson.  
+The two shaped hypothesis testing into what we know today, stemming from specifying two types of mistakes; mistakes, long known intuitively to humans: rejecting a claim that is actually correct (Type I error), or accepting one that is in fact wrong (Type II error).  
+Neyman also provided for a confidence interval, a way to make uncertainty tangible.  
+Fisher saw tests of significance; these two saw ways to make decisions.  
+Abraham Wald also contributed to the development of hypothesis testing, famously performing analysis on the survivability of Allied bombers in the Second World War. 
+
+By the middle of the 20th century, the field of statistics had split into two schools of thought: frequentists who made inferences using confidence intervals and hypothesis tests, and Bayesians, who used the choice of prior and posterior distributions.  
+The field was caught between seeking finality and certainty, and measuring inherent uncertainty. 
+
+Until then, Bayes had lived in the shadows, overlooked by frequentism.  
+Likelihood was direct probability, clear and straight forward; Bayes was the opposite.  
+A few thinkers kept the flame, arguing over what probability was\cite{fienberg_when_2006}.  
+The world was in Fisher's hand with his tests and intervals. 
+Interestingly, Fisher himself seemed wary, seemingly acknowledging the appeal of inverse probability; he tried to undo the Gordian knot by creating Fiduciary inference, a middle course\cite{pederson_fiducial_1978}. 
+
+Then came war.  On September 1st, 1939, Hitler marched into Poland.  
+The six terrifying years, the world seemingly collapsed in on itself.  
+From this, new technological advancements emerged.  
+Advances in radar, aviation, and code breaking appeared\cite{fienberg_when_2006}.  
+Importantly, uncertainty, or the mathematics of uncertainty became a weapon.  
+It was Bayes' moment to shine after all these years.  
+
+Alan Turing and his colleagues at Bletchley Park used Bayes' theorem to crack the Enigma, Germany's secret cipher.  
+With this cipher cracked, the Allies knew were German submarines were in the Atlantic Ocean, allowing for supplies to reach Europe from America.  
+Philosophy became survival.
+
+Turing left no ambiguity about his perspective. He explicitly stated that, “Nearly all applications of probability to cryptography depend on the factor principle (or Bayes’ Theorem)” \cite{taylor_alan_2015}. 
+His "factor principle" yielded posterior odds, expressed in terms of information units he called “bans” (later known as Hartleys). 
+These ideas underscored the utility of Bayesian reasoning in cryptographic analysis.
+
+In the 19th century, Luddittes smashed weaving looms, fearful of the impact of machinery and industrialization on their way of life.  
+By the 1960s, statisticians faced a similar but gentler rebellion of their own.  
+Computers made it possible to work with posteriors too complicated for the pen and paper.  
+Some were fearful; afraid that brute force would take over.  
+Others saw a chance for Bayes Theorem to be practical.  
