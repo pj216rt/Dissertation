@@ -70,3 +70,43 @@ Often times, this penalty term is expressed as a matrix\footnote{See Appendix}.
 The origins of what we now call functional data analysis (FDA) can be traced to the mid-20th century. Grenander (1950) laid the groundwork for statistical analysis of stochastic processes by proposing the decomposition of covariance structures using eigenvalues and eigenvectors \cite{ulf_grenander_stochastic_1950}.  
 Rao was considering how to deal with functions instead of scalars\footnote{"In particular cases, if devices exist to record growth continuously with time, we have the problem of computing the average of entire curves and not merely at a number of time points"}.  
 He considered using principal components to do so\cite{rao_statistical_1958}.  (Rao 1965 too)
+
+Theoretical advancements continued into the 1970s, with Kleffe extending these ideas to principal component analysis for functional data as well as \cite{kleffe_principal_1973}. 
+However, the application of these techniques to real-world data was limited until the late 1970s and early 1980s, when James Ramsay shifted the focus toward functional representations of smooth data curves \cite{ramsay_when_1982}. 
+By introducing basis function expansions (e.g., splines and Fourier series), Ramsay demonstrated the potential for analyzing relationships between entire functions rather than discrete points. 
+His seminal textbook Functional Data Analysis (2005) remains a cornerstone in the field \cite{ramsay_functional_2005}.
+
+In 1982, Laird and Ware introduced the linear mixed-effects model, allowing us to account for correlation in repeated measures\cite{laird_random-effects_1982}.  
+Though not explicitly functional, we carry this notion with us into functional mixed effects models by allowing random effects to account for subject or curve level deviations via:
+
+\begin{equation}
+\label{fda:lmm}
+    y_i = X_i \beta + Z_i b_i + \epsilon_i,
+\end{equation}
+
+where \(y_i \in R^{n_i}\) is the response vector for subject \(i\), \(X_i\) is the design matrix for fixed effects \(\beta\), \(Z_i\) is the design matrix for random effects \(b_i\), and \(\epsilon_i\) is the vector of residual errors. 
+The assumptions are that \(\epsilon_i \sim N(0, R_i), \text{and that } b_i \sim N(0, D)\).  
+Under this specification, the marginal distribution of $y_i$ is
+
+\begin{equation}
+    y_i \sim N(X_i \beta, V_i), \quad V_i = Z_i D Z_i^T + R
+\end{equation}
+
+Four years later, Hart and Wehrely used smoothing kernels to estimate an average growth curve, relaxing the assumption of independent data\cite{hart_kernel_1986}.  
+Among other findings, they showed that the correlation of the data changed the optimal bandwidth for the kernel smoother.  
+Interest in functional regression and its applications has expanded significantly. 
+For example, Wahba (1990) highlighted the use of penalized splines in semi-parametric modeling \cite{wahba_spline_1990}. 
+Later, Rice and Silverman (1991) provided a rigorous framework for estimating functional means and covariances using non-parametric techniques, estimating the covariance function via principal component estimation \cite{rice_estimating_1991}.  
+They also introduce the idea of choosing the spline smoothing term via a cross validation approach.  
+Interestingly, Rice and Silverman also consider a multivariate case (in their paper, data regarding hip and knee motion), penalizing the two components separately, but allowing for the residual covariance matrix to account for hip and knee correlation.
+
+In 1999, Locantore et al. dealt with robust functional component analysis by projecting data onto a sphere, however the data was not kinematic; it was the result of corneal scans\cite{locantore_robust_1999}.  
+Also in 1999, Barry used a Bayesian model with a Gaussian process prior to estimate the overall means as well as curve deviations\footnote{He places "Brownian motion priors" on terms of his model, which appear to be similar to Fourier decomposition.}\cite{barry_bayesian_1995}.  
+He did so in part by decomposing growth curves into four parts: an overall mean curve, a population effect (average shape of the curve over time, after removing the overall, or grand mean), a subjects average curve compared to the overall mean, and subject specific trajectory.  In 1996, Shi used B splines to model both the fixed effects and curve to curve deviations\cite{shi_analysis_1996}.  
+In 2000, James utilized a frequentist approach for this using B-splines, at one point utilizing a penalized least squares minimization problem\cite{james_principal_2000}.  
+In this paper, James also discussed using cross validation to select the number of knots to use in the splines as well as the number of principal components \(k\). 
+
+Wu and Zhang in 2002 used local polynomials to represent both fixed and curve level random effects\cite{wu_local_2002}.  
+That same yeat, Guo modified \ref{fda:lmm} by by treating curve level deviations as random effects and using cubic smoothing splines to model each curve\cite{guo_functional_2002}.  
+Thompson \& Rosen used B splines to model fixed and curve level effects, left the residual covariance matrix unstructured, and also included Bernoulli indicator variables to select interior knots\cite{thompson_bayesian_2008}\footnote{I like this Bernoulli indicator variable.  Use this}.  
+Ogden and Green transform data into a wavelet domain for eye data, taking advantage of wavelets ability to model data with localized behavior\cite{ogden_wavelet_2010}. 
