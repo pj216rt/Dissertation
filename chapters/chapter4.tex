@@ -16,3 +16,52 @@ Practically, it also can act as a form of regularization\footnote{Maybe the wron
 There may also be structural assumptions passed to the model via the prior: smoothness penalties in non/semi-parametric modelling, or shrinkage priors in higher dimensional regression models.  
 Priors can range from noninformative to highly informative.  
 Much work has gone into selecting appropiate priors over the years\cite{jaynes_prior_1968}\cite{van_erp_shrinkage_2019}\cite{kass_selection_1996}.
+
+\subsection{The Likelihood Function}
+The likelihood function describes how probable the observed data are for different values of the model parameters. 
+Formally, for \(n\) continuous random variables with a common density function \(f(y \mid \theta)\),\footnote{A similar form is available for discrete random variables by replacing the density with a probability mass function.} the likelihood function is defined as:
+
+\begin{align}
+\label{bayes:likelihood_func}
+L(y_1, y_2, \dots, y_n|\theta) 
+    &= f(y_1, y_2, \dots, y_n|\theta) \notag\\
+    &= f(y_1 \mid \theta) \times f(y_2 \mid \theta) \times \dots \times f(y_n \mid \theta)
+\end{align}
+
+\noindent
+where \(L(y_1, y_2, \dots, y_n|\theta)\) is viewed as a function of the parameter vector \(\theta\) for fixed observed data \(y_1, \dots, y_n\)\cite{wackerly_mathematical_2008}. 
+When the observations are assumed independent and identically distributed (i.i.d.), the joint density factorizes into a product of individual densities, as shown above.  
+Sometimes for numerical computation reasons we work with the log of the likelihood function.  
+In practice, the likelihood reflects the statistical model one assumes for the data. 
+For example, in a Gaussian regression setting, we assume that each observation \(y_i\) is generated from a normal distribution centered at \(x_i^T\beta\) with variance \(\sigma^2\):
+
+\[
+y_i \sim \mathcal{N}(x_i^\top \beta, \sigma^2),
+\]
+
+where \(x_i = (x_{i1},x_{i2},\dots,x_{ip})^T\) is a vector of predictors for observation \(i\) and \(\beta = (\beta_1,\beta_2,\dots,\beta_p)^T\) represents a vector of regression coefficients.  
+In standard regression, the observations are assumed independent.  
+In such case, the likelihood function becomes:
+
+\begin{equation}
+    L\left(\beta,\sigma^2|y_1,y_2,\dots,y_n\right) = 
+    \prod_{i=1}^{n}\frac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\left(-\frac{(y_i-x_i^T\beta)^2}{2\sigma^2}\right)
+\end{equation}
+
+Frequentists would maximize this function with respect to \(\beta\) and \(\sigma^2\) to obtain maximum likelihood estimates and their accompanying confidence intervals.  
+In Bayesian inference, the likelihood plays a central role by translating observed data into evidence about the parameters, and when multiplied by the prior distribution it yields the posterior distribution. 
+Thus, while the prior reflects external knowledge, the likelihood represents the information about a model parameter(s) \(\theta\) carried by the data.
+
+\subsection{Posterior Inference}
+The posterior distribution summarizes all knowledge about $\theta$ after observing the data. 
+Point estimates are commonly used to summarize a distribution, and this is no different for the posterior distribution.  
+There are several point estimates one can use, however some common point estimates are the posterior mean, median, or mode.  
+Each of these different point estimates corresponds to minimizing different expected loss function.  
+For example, the posterior mean minimizes the expected squared error loss.  
+The posterior median minimizes the expected absolute error loss.  
+The posterior mode, also known as the maximum a posteri (MAP) estimate minimizes a 0-1 loss.  
+
+In terms of interval estimates, credible intervals provide a natural analogue to confidence intervals. 
+One appeal of Bayesian Statistics is that credibility intervals are actual probability statements about a given parameter.  
+The frequentist interpretation of confidence intervals is more tortured; a 95\% confidence interval means that in repeated sampling, the intervals constructed will contain the true parameter \(\theta\)\cite{wackerly_mathematical_2008}.  
+For more complex models, posterior summaries are often computed via Monte Carlo methods.
