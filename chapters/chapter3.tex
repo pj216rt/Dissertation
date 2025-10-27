@@ -1,4 +1,22 @@
 % !TEX root = ../main.tex
-In statistics, we often want to know how much a variable varies in response to changes in some other variables. Statistical models are techniques developed for describing observed data.  These models consist of a some function, usually analytic consisting of combinations of known factors and some noise.  If the analytic portion is a good approximation to a response \(y\), then this noise is typically lower.  A "bad" model would then have a larger noise component.  Commonly, this observed data is finitely-dimensional: a set of scalar observations modeled by more scalar predictors.  Although this observed data may be very high dimensional (possibly, in the case of image data, involving millions of data points), its dimension is still finite.  One possible example may be attempting to predict house price from various predictors\cite{de_cock_ames_2011}.
+In statistics, we often want to know how much a variable varies in response to changes in some other variables. 
+Statistical models are techniques developed for describing observed data.  
+These models consist of a some function, usually analytic consisting of combinations of known factors and some noise.  
+If the analytic portion is a good approximation to a response \(y\), then this noise is typically lower.  
+A "bad" model would then have a larger noise component.  
+Commonly, this observed data is finitely-dimensional: a set of scalar observations modeled by more scalar predictors.  
+Although this observed data may be very high dimensional (possibly, in the case of image data, involving millions of data points), its dimension is still finite.  
+One possible example may be attempting to predict house price from various predictors\cite{de_cock_ames_2011}.
 
-In recent years however, data has become larger and more complex.  One subset of this large, complex data is functional data.  With functional data, data can be thought of as functions supported on some continuous or infinitly dimensional domain, though in practice, this data is discrete realizations of the continuous functions.   Many pieces of literature suggest that much of the classical regression/ANOVA methods learned in statistical textbooks can be easily extended to this functional domain.
+In recent years however, data has become larger and more complex.  
+One subset of this large, complex data is functional data.  
+With functional data, data can be thought of as functions supported on some continuous or infinitly dimensional domain, though in practice, this data is discrete realizations of the continuous functions.   
+Many pieces of literature suggest that much of the classical regression/ANOVA methods learned in statistical textbooks can be easily extended to this functional domain.
+
+The origins of FDA lay in longitudinal, or repeated measures data.  However, now there are many more applications including image data, genomic data, and many more areas of research\cite{morris_functional_2015}.  For our present work, the emphasis will be on functional regression.  
+
+There are several different types of functional regression models, depending on whether the response, the predictors, or both are considered functions.  We will be considering the case where we observe functional responses, a general example being the following: 
+
+\begin{equation}
+    y_i(t) = f(t) + \epsilon_i(t), \quad t \in \mathcal{T},
+\end{equation}
