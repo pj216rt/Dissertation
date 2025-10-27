@@ -1,0 +1,18 @@
+\subsection{Foundations of the Bayesian Approach}
+Bayesian statistics provides a probabilistic framework for inference, where uncertainty in parameters is expressed via probability distributions. 
+This contrasts with frequentist statistics, which treats parameters as constant, but unknown with uncertainty coming from the random data generation that humans observe.  
+The central idea of Bayesian inference is that unknown parameters $\theta$ are random variables with a prior probability distribution $p(\theta)$, which encodes beliefs or information before seeing the data. Observed data $y$ are linked to $\theta$ through a likelihood function $p(y \mid \theta)$. 
+Bayes' theorem combines these to yield the posterior distribution:
+
+\[
+    p(\theta \mid y) \propto p(y \mid \theta)\, p(\theta).
+\]
+
+\subsection{Prior Distributions}
+The prior $p(\theta)$ at its heart is simply a probability distribution before any data is observed.  
+However, the prior also serves a few different roles.  
+First, intuitively it reflects knowledge, or lack thereof about parameters before data collection.  
+Practically, it also can act as a form of regularization\footnote{Maybe the wrong word.}, down weighting unlikely parameter values.  
+There may also be structural assumptions passed to the model via the prior: smoothness penalties in non/semi-parametric modelling, or shrinkage priors in higher dimensional regression models.  
+Priors can range from noninformative to highly informative.  
+Much work has gone into selecting appropiate priors over the years\cite{jaynes_prior_1968}\cite{van_erp_shrinkage_2019}\cite{kass_selection_1996}.

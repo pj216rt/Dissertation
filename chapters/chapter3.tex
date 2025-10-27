@@ -110,3 +110,9 @@ Wu and Zhang in 2002 used local polynomials to represent both fixed and curve le
 That same yeat, Guo modified \ref{fda:lmm} by by treating curve level deviations as random effects and using cubic smoothing splines to model each curve\cite{guo_functional_2002}.  
 Thompson \& Rosen used B splines to model fixed and curve level effects, left the residual covariance matrix unstructured, and also included Bernoulli indicator variables to select interior knots\cite{thompson_bayesian_2008}\footnote{I like this Bernoulli indicator variable.  Use this}.  
 Ogden and Green transform data into a wavelet domain for eye data, taking advantage of wavelets ability to model data with localized behavior\cite{ogden_wavelet_2010}. 
+
+In theory, any basis system that can suitably model the infinite dimensionality of the data is appropiate; we are not limited to just penalized splines.  
+For example, in 2003 Morris modeled a three level hierarchical functional model with wavelets for colorectal cancer data, but assumed that the measurement errors of the level 1 residual curves were independent\cite{morris_wavelet-based_2003}.  
+In 2006, Morris \& Carroll modified their earlier model to allow for correlated residual curves\cite{morris_wavelet-based_2006}.  
+Baladandayuthapani used penalized splines for modeling multilevel random effects in a three level Bayesian hierarchical model involving colon cancer data\cite{baladandayuthapani_bayesian_2008}.  
+Interestingly, Baladandayuthapani left the random effect covariance matrices unstructured; much work was spent on dimension reduction.
