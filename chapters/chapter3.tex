@@ -1,5 +1,5 @@
 % !TEX root = ../main.tex
-In statistics, we often want to know how much a variable varies in response to changes in some other variables. 
+In statistics, we often want to know how much a variable varies in response to changes in some other variables.  
 Statistical models are techniques developed for describing observed data.  
 These models consist of a some function, usually analytic consisting of combinations of known factors and some noise.  
 If the analytic portion is a good approximation to a response \(y\), then this noise is typically lower.  
@@ -14,31 +14,28 @@ With functional data, data can be thought of as functions supported on some cont
 Many pieces of literature suggest that much of the classical regression/ANOVA methods learned in statistical textbooks can be easily extended to this functional domain.
 
 The origins of FDA lay in longitudinal, or repeated measures data.  
-However, now there are many more applications including image data, genomic data, and many more areas of research\cite{morris_functional_2015}.  
-For our present work, the emphasis will be on functional regression.  
+However, now there are many more applications including image data, genomic data, and many more areas of research\cite{morris_functional_2015}.  For our present work, the emphasis will be on functional regression.  
 
 There are several different types of functional regression models, depending on whether the response, the predictors, or both are considered functions.  
 We will be considering the case where we observe functional responses, a general example being the following: 
 
 \begin{equation}
-    y_i(t) = f(t) + \epsilon_i(t), \quad t \in \mathcal{T},
+    y_i(t) = f_i(t) + \epsilon_i(t), \quad t \in \mathcal{T},
 \end{equation}
 
 \noindent
-where $y_i(t)$ represents the $i$th subject’s noisy trajectory, $f(t)$ is the underlying smooth function of interest, and \(\epsilon_i(t)\) is a mean 0 random noise. 
-In practice, we only observe a finite, often sparse, collection of noisy evaluations of this infinite-dimensional object \(t=\{t_1,t_2,\dots,t_D\}\).  
+where $y_i(t)$ represents the $i$th subject’s noisy trajectory, $f(t)$ is the underlying smooth function of interest, and \(\epsilon_i(t)\) is a mean 0 random noise.  
+In practice, we only observe a finite, often sparse, collection of noisy evaluations of this infinite-dimensional object at \(t=\{t_1,t_2,\dots,t_D\}\).  
 Let the observed value of the functional response for subject \(i\) at time \(t_j\) be denoted \(Y_i(t_j)\), for \(i = 1, \dots, N\) and \(j = 1, \dots, T_i\).  
 Given a set of \(p\) scalar predictors \(X_{ia}\) where \( a = 1,2,\dots, p\), the mean structure of the functional model \(f(t)\) can be expressed as a linear combination of these predictors, analogous to an ordinary linear regression\footnote{Using the notation of Morris\cite{morris_functional_2015}.}:
 
 \begin{equation}
-    Y_i(t_j) = \sum_{a=1}^{p} X_{ia}B_a(t_j) + E_i(t_j)
+    Y_i(t_j) = \sum_{a=1}^{p} X_{ia}B_a(t_j) + E_i(t_j),
 \end{equation}
 
 \noindent
-where \(E_i(t)\) denotes residual errors.  
-Typically, the behavior of functional coefficients \(B_a(t_j)\) is of interest.  
-Because \(B_a(t_j)\) is typically assumed to be smooth and therefore infinite-dimensional, some form of dimension reduction is necessary before estimation and inference can proceed. 
-The most common approaches involve representing \(B_a(t_j)\)  in terms of a finite basis expansion:
+where \(E_i(t)\) denotes residual errors.  Typically, the behavior of the functional coefficients \(B_a(t_j)\) is of interest.  
+Because \(B_a(t_j)\) is typically assumed to be smooth and therefore infinite-dimensional, some form of dimension reduction is necessary before estimation and inference can proceed. The most common approaches involve representing \(B_a(t_j)\)  in terms of a finite basis expansion:
 
 \begin{equation}
     B_a(t_j) \approx \sum_{\ell=1}^K \theta_\ell \, \psi_\ell(t),
@@ -47,34 +44,33 @@ The most common approaches involve representing \(B_a(t_j)\)  in terms of a fini
 \noindent
 where $\{\psi_\ell(t)\}_{\ell=1}^K$ are chosen basis functions (e.g., B-splines, Fourier series, or functional principal components), and $\boldsymbol\theta=(\theta_1,\ldots,\theta_K)^\top$ are the corresponding coefficients.  
 
-This basis representation allows us to recast the infinite-dimensional regression problem into a finite-dimensional one, where estimation of the coefficient vector $\boldsymbol\theta$ becomes feasible with standard linear model tools, subject to additional constraints such as smoothness penalties. 
-This penalty is often encoded through a matrix $P$ that penalizes roughness (e.g., between adjacent coefficients in the sequence of basis functions), thereby balancing fidelity to the data with smoothness of the estimated function.
+This basis representation allows us to recast the infinite-dimensional regression problem into a finite-dimensional one, 
+where estimation of the coefficient vector $\boldsymbol\theta$ becomes feasible with standard linear model tools, subject to additional constraints such as smoothness penalties. 
+This penalty is often encoded through a matrix $P$ that penalizes roughness (e.g., between adjacent coefficients in the sequence of basis functions), thereby balancing fidelity to the data with smoothness of the estimated function.  
 
 With spline regression/modeling, there are often competing objectives.  
 First, you want a model that fits the observed data as closely as possible.  
-However, sometimes this resulting model is too "wiggly", making interpretability difficult.  
-As a consequence, we want a model that is still a "good" fit, but not necessarily the "best" in terms of fit to the data.  
+However, sometimes this resulting model is too \say{wiggly}, making interpretability difficult.  
+As a consequence, we want a model that is still a \say{good} fit, but not necessarily the \say{best} in terms of fit to the data.  
 We achieve this by by minimizing a penalized least-squares criterion that looks like:
 
 \begin{equation}
     \min_{\beta} \left\{ 
-        \sum_{i=1}^{n} \left( y_i - \beta(t_i) \right)^2 
-        + \lambda \int \left[\beta''(t)\right]^2 \, dt
-        \right\},
+\sum_{i=1}^{n} \left( y_i - \beta(t_i) \right)^2 
++ \lambda \int \left[\beta''(t)\right]^2 \, dt
+\right\},
 \end{equation}
 
-The first term in this equation is the standard residual sum of squares, while the second term is a quadratic penalty on the second derivatives of \(\beta\).  
-\(\lambda\) is a smoothing parameter that serves as a balance between the two components of this penalized least squares equation; smaller values of \(\lambda\) penalize the fit less, while larger values penalizes more, forcing more smoothness.  
-Often times, this penalty term is expressed as a matrix\footnote{See Appendix}.
+The first term in this equation is the standard residual sum of squares, while the second term is a quadratic penalty on the second derivatives of \(\beta\).  \(\lambda\) is a smoothing parameter that serves as a balance between the two components of this penalized least squares equation; smaller values of \(\lambda\) penalize the fit less, while larger values penalizes more, forcing more smoothness.  Often times, this penalty term is expressed as a matrix\footnote{See Appendix}.
 
-The origins of what we now call functional data analysis (FDA) can be traced to the mid-20th century. Grenander (1950) laid the groundwork for statistical analysis of stochastic processes by proposing the decomposition of covariance structures using eigenvalues and eigenvectors \cite{ulf_grenander_stochastic_1950}.  
+The origins of what we now call functional data analysis (FDA) can be traced to the mid-20th century.  
+Grenander (1950) laid the groundwork for statistical analysis of stochastic processes by proposing the decomposition of covariance structures using eigenvalues and eigenvectors \cite{ulf_grenander_stochastic_1950}.  
 Rao was considering how to deal with functions instead of scalars\footnote{"In particular cases, if devices exist to record growth continuously with time, we have the problem of computing the average of entire curves and not merely at a number of time points"}.  
 He considered using principal components to do so\cite{rao_statistical_1958}.  (Rao 1965 too)
 
-Theoretical advancements continued into the 1970s, with Kleffe extending these ideas to principal component analysis for functional data as well as \cite{kleffe_principal_1973}. 
-However, the application of these techniques to real-world data was limited until the late 1970s and early 1980s, when James Ramsay shifted the focus toward functional representations of smooth data curves \cite{ramsay_when_1982}. 
-By introducing basis function expansions (e.g., splines and Fourier series), Ramsay demonstrated the potential for analyzing relationships between entire functions rather than discrete points. 
-His seminal textbook Functional Data Analysis (2005) remains a cornerstone in the field \cite{ramsay_functional_2005}.
+Theoretical advancements continued into the 1970s, with Kleffe extending these ideas to principal component analysis for functional data as well \cite{kleffe_principal_1973}.  
+However, the application of these techniques to real-world data was limited until the late 1970s and early 1980s, when James Ramsay shifted the focus toward functional representations of smooth data curves \cite{ramsay_when_1982}.  
+By introducing basis function expansions (e.g., splines and Fourier series), Ramsay demonstrated the potential for analyzing relationships between entire functions rather than discrete points. His seminal textbook Functional Data Analysis (2005) remains a cornerstone in the field \cite{ramsay_functional_2005}.
 
 In 1982, Laird and Ware introduced the linear mixed-effects model, allowing us to account for correlation in repeated measures\cite{laird_random-effects_1982}.  
 Though not explicitly functional, we carry this notion with us into functional mixed effects models by allowing random effects to account for subject or curve level deviations via:
@@ -84,35 +80,44 @@ Though not explicitly functional, we carry this notion with us into functional m
     y_i = X_i \beta + Z_i b_i + \epsilon_i,
 \end{equation}
 
-where \(y_i \in R^{n_i}\) is the response vector for subject \(i\), \(X_i\) is the design matrix for fixed effects \(\beta\), \(Z_i\) is the design matrix for random effects \(b_i\), and \(\epsilon_i\) is the vector of residual errors. 
+\noindent
+where \(y_i \in \mathbb{R}^{T_i}\) is the response vector for subject \(i\), \(X_i\) is the design matrix for fixed effects \(\beta\), \(Z_i\) is the design matrix for random effects $b_i$, and \(\epsilon_i\) is the vector of residual errors.  
 The assumptions are that \(\epsilon_i \sim N(0, R_i), \text{and that } b_i \sim N(0, D)\).  
 Under this specification, the marginal distribution of $y_i$ is
 
 \begin{equation}
-    y_i \sim N(X_i \beta, V_i), \quad V_i = Z_i D Z_i^T + R
+    y_i \sim N(X_i \beta, V_i), \quad V_i = Z_i D Z_i^T + R.
 \end{equation}
 
 Four years later, Hart and Wehrely used smoothing kernels to estimate an average growth curve, relaxing the assumption of independent data\cite{hart_kernel_1986}.  
 Among other findings, they showed that the correlation of the data changed the optimal bandwidth for the kernel smoother.  
-Interest in functional regression and its applications has expanded significantly. 
-For example, Wahba (1990) highlighted the use of penalized splines in semi-parametric modeling \cite{wahba_spline_1990}. 
+Interest in functional regression and its applications has expanded significantly.  
+For example, Wahba (1990) highlighted the use of penalized splines in semi-parametric modeling \cite{wahba_spline_1990}.  
 Later, Rice and Silverman (1991) provided a rigorous framework for estimating functional means and covariances using non-parametric techniques, estimating the covariance function via principal component estimation \cite{rice_estimating_1991}.  
 They also introduce the idea of choosing the spline smoothing term via a cross validation approach.  
-Interestingly, Rice and Silverman also consider a multivariate case (in their paper, data regarding hip and knee motion), penalizing the two components separately, but allowing for the residual covariance matrix to account for hip and knee correlation.
+Interestingly, Rice and Silverman also consider a multivariate case (in their paper, data regarding hip and knee motion), 
+penalizing the two components separately, but allowing for the residual covariance matrix to account for hip and knee correlation.
 
 In 1999, Locantore et al. dealt with robust functional component analysis by projecting data onto a sphere, however the data was not kinematic; it was the result of corneal scans\cite{locantore_robust_1999}.  
 Also in 1999, Barry used a Bayesian model with a Gaussian process prior to estimate the overall means as well as curve deviations\footnote{He places "Brownian motion priors" on terms of his model, which appear to be similar to Fourier decomposition.}\cite{barry_bayesian_1995}.  
-He did so in part by decomposing growth curves into four parts: an overall mean curve, a population effect (average shape of the curve over time, after removing the overall, or grand mean), a subjects average curve compared to the overall mean, and subject specific trajectory.  In 1996, Shi used B splines to model both the fixed effects and curve to curve deviations\cite{shi_analysis_1996}.  
+He did so in part by decomposing growth curves into four parts: an overall mean curve, a population effect (average shape of the curve over time, after removing the overall, or grand mean), a subject's average curve compared to the overall mean, and subject specific trajectory.  
+In 1996, Shi used B splines to model both the fixed effects and curve to curve deviations\cite{shi_analysis_1996}.  
 In 2000, James utilized a frequentist approach for this using B-splines, at one point utilizing a penalized least squares minimization problem\cite{james_principal_2000}.  
-In this paper, James also discussed using cross validation to select the number of knots to use in the splines as well as the number of principal components \(k\). 
+In this paper, James also discussed using cross validation to select the number of knots to use in the splines as well as the number of principal components. 
 
 Wu and Zhang in 2002 used local polynomials to represent both fixed and curve level random effects\cite{wu_local_2002}.  
-That same yeat, Guo modified \ref{fda:lmm} by by treating curve level deviations as random effects and using cubic smoothing splines to model each curve\cite{guo_functional_2002}.  
+That same year, Guo modified \eqref{fda:lmm} by by treating curve level deviations as random effects and using cubic smoothing splines to model each curve\cite{guo_functional_2002}.  
 Thompson \& Rosen used B splines to model fixed and curve level effects, left the residual covariance matrix unstructured, and also included Bernoulli indicator variables to select interior knots\cite{thompson_bayesian_2008}\footnote{I like this Bernoulli indicator variable.  Use this}.  
-Ogden and Green transform data into a wavelet domain for eye data, taking advantage of wavelets ability to model data with localized behavior\cite{ogden_wavelet_2010}. 
+Ogden and Green transform data into a wavelet domain for eye data, taking advantage of wavelet's ability to model data with localized behavior\cite{ogden_wavelet_2010}.  
 
-In theory, any basis system that can suitably model the infinite dimensionality of the data is appropiate; we are not limited to just penalized splines.  
+In theory, any basis system that can suitably model the infinite dimensionality of the data is appropriate; 
+we are not limited to just penalized splines.  
 For example, in 2003 Morris modeled a three level hierarchical functional model with wavelets for colorectal cancer data, but assumed that the measurement errors of the level 1 residual curves were independent\cite{morris_wavelet-based_2003}.  
-In 2006, Morris \& Carroll modified their earlier model to allow for correlated residual curves\cite{morris_wavelet-based_2006}.  
-Baladandayuthapani used penalized splines for modeling multilevel random effects in a three level Bayesian hierarchical model involving colon cancer data\cite{baladandayuthapani_bayesian_2008}.  
-Interestingly, Baladandayuthapani left the random effect covariance matrices unstructured; much work was spent on dimension reduction.
+In 2006, Morris \& Carroll modified their earlier model to allow for correlated residual curves\cite{morris_wavelet-based_2006}.  Baladandayuthapani used penalized splines for modeling multilevel random effects in a three level Bayesian hierarchical model involving colon cancer data\cite{baladandayuthapani_bayesian_2008}.  
+Interestingly, Baladandayuthapani left the random effect covariance matrices unstructured; much work was spent on dimension reduction.  
+
+Recently, there has been a focus on so-called second generation functional data, that is, functional data where independence across observations cannot be assumed, or outcomes are multidimensional.  
+In particular, there is existing literature for multi-variate functional data analysis.  
+This is functional data where the observed data is multidimensional\cite{koner_second-generation_2023}.  
+Previously, Faraway had illustrated a model in which the path that a subject's hand took to a specified three dimensional point are fitted with via a linear model\cite{faraway_regression_1997}.  
+Other possible methods of modelling the smooth functional components include local polynomials, and functional principal components\cite{liu_functional_2012}.
