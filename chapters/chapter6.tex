@@ -29,3 +29,46 @@ is a matrix containing basis coefficients for \(\boldsymbol{\beta}\), and \(B_z\
 \begin{equation}
     \boldsymbol{y}_{ij} = \boldsymbol{\omega}_iB_W^T\Theta^T + \boldsymbol{z}_{i}B_Z^T\Theta^T + \boldsymbol{\epsilon}_{ij}.
 \end{equation}
+
+In this foundational model, Goldsmith penalizes the fixed and random effect spline coefficients with a common, 
+\emph{a priori} penalty matrix\cite{goldsmith_assessing_2016}.  
+Goldsmith also allows for the variances for the fixed effect coefficient to vary by covariate.  
+This allows for a possibly different level of smoothness for each functional coefficient curve.  
+The random effect coefficients  are penalized together (i.e. not different smoothness penalties for each subject's random effects).  
+This leaves us with the following model:
+
+\begin{equation}
+    \begin{split}
+        \boldsymbol{y}_{ij} = \boldsymbol{\omega}_iB_W^T\Theta^T + \boldsymbol{z}_{i}B_Z^T\Theta^T + \boldsymbol{\epsilon}_{ij}\\
+        \epsilon\sim N[0, \Sigma\otimes I_n]\\
+        B_{Z,i} \sim N[0, \sigma_z^2P^{-1}]\quad \text{for} \quad i = 1,\dots, I\\
+        B_{W, k} \sim N[0, \sigma_{W,k}^2P^{-1}],
+    \end{split}
+\end{equation}
+
+\noindent
+where \(\epsilon\) denotes the stacked collection of all \(\boldsymbol{\epsilon}_{ij}\).  
+Goldsmith assigned inverse-gamma priors on the variance components and an unstructured inverse-Wishart prior for the residual 
+covariance matrix\cite{goldsmith_assessing_2016}.  A section of his paper is dedicated to choosing hyper-parameters for these priors; 
+he uses a series of linear regressions and principal component analyses to obtain hyperparameter values a la an empirical Bayes approach.   
+
+Goldsmith points out that the sampling performance of this model can be improved by hierarchical recentering, and, indeed, 
+recentering is a common method\cite{gelfand_efficient_1995}, although Gelman refers to this as \say{decoupling}\cite{gelman_bayesian_2013}.  With this recentering/decoupling, Goldsmith presents the following model for one dimension:
+
+\begin{equation}
+    \begin{split}
+        Y = ZB_Z^T\Theta^T + \epsilon\\
+        \epsilon\sim N[0, \Sigma\otimes I_n]\\
+        \Sigma \sim IW[v, \Psi]\\
+        B_{Z,i} \sim N[B_w \boldsymbol{w}_i^T, \sigma_z^2P^{-1}]\quad \text{for} \quad i = 1,\dots, I\\
+        \sigma_z^2 \sim IG[a_z, b_z]\\
+        B_{W, k} \sim N[0, \sigma_{W,k}^2P^{-1}]\\
+        \sigma_{W,k}^2 \sim IG[a_{W,k}, b_{W,k}]\quad \text{for} \quad k = 1,\dots, p
+    \end{split}
+    \label{mod1_var}
+\end{equation}
+
+Here \(Y\) is a \(n\times D\) matrix composed of functional observations stacked in rows, \(Z\) is the random effects design matrix, 
+and \(W\) denotes the fixed effects design matrix.  Goldsmith then derives the conditional distributions of 
+\(p\left(B_{Z,i}|\text{rest}\right)\), \(p\left(\text{vec}(B_W)|\text{rest}\right)\), \(p\left(\sigma_z^2|\text{rest}\right)\), 
+\(p\left(\sigma_{W,k}^2|\text{rest}\right)\), and \(p\left(\Sigma|\text{rest}\right)\) in order to set up a Gibbs sampler. 
