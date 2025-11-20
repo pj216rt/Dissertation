@@ -1,0 +1,9 @@
+The following procedure generates smooth realization of regression coefficient functions 
+(typically referred to as \(\beta\)) for three dimensions.  A B-spline basis provides a flexible yet 
+smooth representation of a function, while assigning random normal coefficients allows for subject specific variability 
+around the conditional mean function\footnote{A B spline basis allows for a smooth functional form.  
+A penalty matrix controls how smooth this functional form is.}.  For each of the three response dimensions, 
+we construct B-spline basis functions 
+over an evenly spaced grid and multiply these by a matrix of randomly drawn 
+coefficients.  The resulting \(p\) curves for each dimension are concatenated to form 
+a final \(p \times 3D\) matrix.

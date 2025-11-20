@@ -58,3 +58,179 @@ A result of this is that the Inverse Wishart \(IW\left(n\boldsymbol{S} + \Psi, n
 concentrate more tightly around its prior expected value: \(\Psi/{\left(v-p-1\right)}\)\cite{zhang_note_2021}. When the scale matrix is 
 the identity matrix, this expected value is proportional to the identity matrix itself; using an Inverse Wishart prior with an identity 
 scale matrix can lead to over-shrinkage of the estimated covariance matrix towards the identity matrix.
+
+We propose a modified model that allows for correlation among the functional outcomes without using the inverse Wishart distribution: 
+
+\begin{equation}
+    \begin{split}
+    Y = ZB_Z^T\left(I_3 \otimes\Theta^T\right) + \epsilon\\
+    \epsilon\sim N[0, \sigma_{0}^2 I_n]\\
+    B_{Z,i} \sim N[B_w \boldsymbol{w}_i^T, \Omega_Z\otimes P^{-1}]\quad \text{for} \quad i = 1,\dots, I\\
+    \Omega_Z \sim IW [v_z, \Psi_z]\\
+    B_{W,i} \sim N[0, \Omega_{W,k}\otimes P^{-1}]\\
+    \Omega_{W,k} \sim IW[v_{w,k}\Psi_{w,k}]\quad\text{for} \quad k = 1,\dots, p
+    \end{split}
+    \label{model_centered_iid}
+\end{equation}
+
+We have moved the dependence from the level 1 error structure into the fixed and random effects.  
+The intuition behind this is that now, rather than a \(300\times 300\) covariance matrix, our model only has 
+\(p+1\)\footnote{p matrices for the fixed effects, plus 1 for the random effects.} \(3\times 3\), covariance matrices, s
+implifying sampling with STAN.  Stan is a statistical software available in multiple programming languages that allows for easy
+ HMC modeling.  With STAN, one can create a model by specifying probability distributions, relationships between parameters, and 
+ hierarchical structures (if needed).  There is at least one other instance of Bayesian functional data analysis being performed 
+ using STAN, indeed by Goldsmith himself the prior year\cite{goldsmith_generalized_2015}.
+
+In doing this, issues were encountered regarding the physical geometry of the this model in Stan.  
+Take for instance the univeriate model in equation \ref{mod1_var}.  Specifically the conditional prior distribution on \(B_{Z,i}\):
+\[
+B_{Z,i} \mid \sigma_Z^2 \sim N(B_W \boldsymbol{w}_i^T, \sigma_Z^2 P^{-1}),
+\]
+which written out is:
+\[
+p(B_{Z,i} \mid \sigma_Z^2) \propto |\sigma_Z^2 P^{-1}|^{-1/2}
+\exp\left[
+-\frac{1}{2}(B_{Z,i}-B_W \boldsymbol{w}_i^T)'(\sigma_Z^2 P^{-1})^{-1}(B_{Z,i}-B_W \boldsymbol{w}_i^T)
+\right].
+\]
+
+Because $(\sigma_Z^2 P^{-1})^{-1} = \tfrac{1}{\sigma_Z^2}P$ and $|\sigma_Z^2 P^{-1}| = (\sigma_Z^2)^{K_t}|P|^{-1}$, this simplifies to
+\[
+p(B_{Z,i} \mid \sigma_Z^2)
+\propto
+(\sigma_Z^2)^{-K_t/2}
+\exp\left[
+-\frac{1}{2\sigma_Z^2}
+(B_{Z,i}-B_W \boldsymbol{w}_i^T)'P(B_{Z,i}-B_W \boldsymbol{w}_i^T)
+\right].
+\]
+
+Combining this with a prior on $\sigma_Z^2$ and omitting constants gives the joint density
+\[
+p(B_{Z,i}, \sigma_Z^2)
+\propto
+(\sigma_Z^2)^{-K_t/2}\exp\left[-\frac{1}{2\sigma_Z^2}
+(B_{Z,i}-B_W \boldsymbol{w}_i^T)'P(B_{Z,i}-B_W \boldsymbol{w}_i^T)
+\right]p(\sigma_Z^2),
+\]
+and thus the log-density
+\[
+\log p(B_{Z,i}, \sigma_Z^2)\propto -\frac{1}{2\sigma_Z^2}
+(B_{Z,i}-B_W \boldsymbol{w}_i^T)'P(B_{Z,i}-B_W \boldsymbol{w}_i^T)
+-\frac{K_t}{2}\log\sigma_Z^2.
+\]
+
+This form reveals a strong coupling between $B_{Z,i}$ and $\sigma_Z^2$ in the joint posterior: when $\sigma_Z^2$ is small, 
+the quadratic term must also be small for the density to remain finite, forcing $B_{Z,i}$ to lie close to its 
+mean $B_W \boldsymbol{w}_i^T$.  In short, small $\sigma_Z^2$ implies $B_{Z,i} \approx B_W \boldsymbol{w}_i^T$, 
+while large $\sigma_Z^2$ allows broader variation.  Geometrically, the high-probability region of $(B_{Z,i},\sigma_Z)$ 
+resembles a funnel: flat and wide for large $\sigma_Z^2$, but sharply tapering to 0 as $\sigma_Z^2 \to 0$.
+
+To fix this, the common tool of un-centering is used.  Previous works have made the observation that un-centering can 
+improve performance of Hamiltonian Monte Carlo\cite{betancourt_hamiltonian_2013}, and that some models perform better un-centered 
+than centered\cite{papaspiliopoulos_general_2007}.  The prior for \(B_{Z,i}\) can be written as:
+\[
+B_{Z,i} = B_W \boldsymbol{w}_i^T + \sigma_Z P^{-1/2} z_i, \qquad z_i \sim N(\mathbf{0}, I),
+\]
+which defines a linear transformation
+\[
+B_{Z,i} = B_W \boldsymbol{w}_i^T + L z_i,\qquad L = \sigma_Z P^{-1/2}.
+\]
+
+Solving for \(z_i\):
+\[
+z_i = L^{-1}(B_{Z,i} - B_W \boldsymbol{w}_i^T = \frac{1}{\sigma_Z} P^{1/2} (B_{Z,i} - B_W\boldsymbol{w}_i^T).
+\]
+This is transformation of variables.  The Jacobian determinant of this transformation (for fixed $\sigma_Z$) is
+\[
+\left|\frac{\partial B_{Z,i}}{\partial z_i}\right| = \sigma_Z^{K_t} |P^{-1/2}|.
+\]
+Substituting into the centered joint density and applying the change of variables gives
+\[
+\begin{split}
+(B_{Z,i}-B_W \boldsymbol{w}_i^T)'P(B_{Z,i}-B_W \boldsymbol{w}_i^T)
+&= (\sigma_Z z_i' P^{-1/2})P(P^{-1/2} \sigma_Z z_i)
+= \sigma_Z^2 z_i' z_i = \sigma_Z^2 \|z_i\|^2.
+\end{split}
+\]
+The exponential term thus becomes $\exp[-\tfrac{1}{2}\|z_i\|^2]$, and the Jacobian cancels the $(\sigma_Z^2)^{-K_t/2}$ factor exactly:
+\[
+(\sigma_Z^2)^{-K_t/2}\times\left|\frac{\partial B_{Z,i}}{\partial z_i}\right|
+= (\sigma_Z^2)^{-K_t/2} \sigma_Z^{K_t} = 1.
+\]
+The transformed joint density is therefore
+\[
+p(z_i, \sigma_Z^2) \propto \exp\!\left[-\tfrac{1}{2}\|z_i\|^2\right] p(\sigma_Z^2),
+\]
+and taking logs gives
+\[
+\log p(z_i,\sigma_Z^2) \propto -\tfrac{1}{2}\|z_i\|^2 + \log p(\sigma_Z^2) + \text{const.}
+\]
+
+This reparameterization eliminates the multiplicative dependence between $z_i$ and $\sigma_Z^2$.  
+To see the difference, we can consider the gradient of both the centered and uncentered log joint distributions of 
+\((B_{Z,i},\sigma_Z^2)\):
+
+For the centered parameterization, we can consider the log joint as:
+
+\[
+\log p(B_{Z,i}, \sigma_Z^2)\propto -\frac{1}{2\sigma_Z^2}
+(B_{Z,i}-B_W \boldsymbol{w}_i^T)'P(B_{Z,i}-B_W \boldsymbol{w}_i^T)
+-\frac{K_t}{2}\log\sigma_Z^2,
+\]
+and we can consider the two gradients as:
+\[
+\frac{\partial}{\partial B_{Z,i}}\text{log } p(B_{Z,i},\sigma_Z^2) \propto -\frac{1}{2\sigma_Z^2}(B_{Z,i}-B_W \boldsymbol{w}_i^T)
+\]
+and
+\[
+\frac{\partial}{\partial \sigma_Z^2}\text{log } p(B_{Z,i},\sigma_Z^2) \propto -\frac{1}{2(\sigma_Z^2)^2}
+(B_{Z,i}-B_W \boldsymbol{w}_i^T)'P(B_{Z,i}-B_W \boldsymbol{w}_i^T) - \frac{Kt}{2\sigma_Z^2} + \frac{\partial}{\partial \sigma_Z^2}\text{log }\sigma_Z^2.
+\]
+In short, the gradients depend on each other.  Compare this, for example, to the uncentered parameterization, with log joint:
+
+\[
+\log p(z_i,\sigma_Z^2) \propto -\tfrac{1}{2}\|z_i\|^2 + \log p(\sigma_Z^2).
+\]
+
+The two gradients are:
+\[
+\frac{\partial}{\partial z_i}\log p(z_i,\sigma_Z^2) \propto -z_i\quad \text{and}\quad \frac{\partial}{\partial \sigma_Z^2}\log p(z_i,\sigma_Z^2) \propto \frac{1}{\sigma_Z^2}
+\]
+
+In this parameterization, the gradients do not depend on each other; they separate nicely.  
+Since HMC relies on the gradients of parameters to update itself, this improves sampling performance.
+
+There were more computational improvements done to this model, some of which are only feasible in the Stan framework.  
+First, the large matrix \(Z\) was a dummy matrix, identifying which subject's random effects we're considering.  
+This was replaced with a simple integer array.  This speeds things up computationally as we no longer have to multiple a 
+\(n\times I\) matrix in the likelihood step.  This portion can probably be done in the Gibbs sampler.  
+
+Second, instead of placing priors specifically on the inverse-Wishart components of the model, we decompose them into 
+correlation matrices and scale arrays; this is mathematically equivalent to a prior on \(\Omega\) but is numerically much more stable.  
+Impossible is a very presumptive word and rarely appropriate, however doing this in a Gibbs sampler would be much more difficult.  
+The Gibbs sampler relies on the inverse-Wishart for its conditionals, and I do not know of any closed form for the Stan decomposition 
+in this framework.  It is not immediately apparent that is is conjugate, and would most likely require a Metropolis step within Gibbs.
+
+Thirdly, the priors on the spline coefficients are\(B_{Z,i}\sim N\left(B_{Z,i}-B_W\boldsymbol{\omega}_i^T,\Omega_Z\otimes P^-1\right)\) 
+and \(B_{W,k}\sim N\left(0,\Omega_{W,k}\otimes P^{-1}\right)\), respectively.  We compute these covariance terms once per iteration, 
+then decompose them via a Cholesky decomposition.  Again, the same issues raised in the preceding paragraph are still present here.  
+In short, the easiest way to do take advantage of these computational speed ups is to use Stan.  
+
+So how does this change the form of the model?  It gives us the following model:
+
+\begin{equation}
+    \begin{split}
+    Y = B_{Z,i}^T\left(I_3 \otimes\Theta^T\right) + \epsilon\\
+    \epsilon\sim N[0, \sigma_{0}^2 I_n]\\
+    B_{Z,i} = B_w\boldsymbol{w}_i^T + L_{Z}z_{Z,i}\quad z_{Z,i} \sim N\left(0,\mathcal{I} \right)\quad\text{for} \quad i = 1,\dots, I\\
+    B_{W,k} = L_{W,k}Z_{W,k}\quad Z_{W,k}\sim N\left(0,\mathcal{I}\right)\quad \text{for} \quad k = 1,\dots, p\\
+    L_Z^TL_Z = \Omega_z\otimes P^{-1}\\
+    L_{W,k}^TL_{W,k} = \Omega_{W,k}\otimes P^{-1}\\
+    \Omega_{Z} = D_ZR_ZD_Z^T\quad D_Z = \text{diag}(\tau_z)\quad R_Z \sim JKL(.)\quad \tau_z\sim N^{+}(0,1)\\
+    \Omega_{W,k} = D_{W,k}R_{W,k}D_{W,k}^T\quad D_{W,k} = \text{diag}(\tau_{W,k})\quad R_{W,k}\sim JKL(.)\quad \tau_{W,k}\sim N^{+}(0,1)\\
+    \end{split}
+    \label{model:uncentered}
+\end{equation}
+
+This is mathematically equivalent to the model found in \eqref{model_centered_iid}, simply decomposed.
