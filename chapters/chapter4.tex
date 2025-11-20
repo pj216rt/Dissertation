@@ -159,3 +159,74 @@ These two quantities describes a system's state at any moment.  The following eq
     \frac{\mathrm{d}p}{\mathrm{d}t} = 
     -\frac{\partial H}{\partial q}.
 \end{equation}
+
+The first equation tells us how position changes over time, while the second tells us how momentum changes overtime.  
+This is the intuition behind HMC.  
+The target distribution's parameters are treated as positions and we introduce an axillary momentum variable.  
+Each parameter $\theta$ is paired with an auxiliary momentum $\phi$, and the joint distribution $p(\theta, \phi \mid y) = p(\theta \mid y)\,p(\phi)$ is explored using trajectories that mimic Hamiltonian dynamics, 
+obeying dynamic equations and abiding by a function of total energy, the Hamiltonian.  
+The momentum is typically drawn from a multivariate normal distribution $\phi \sim \mathcal N(0, M)$, where $M$ is the \say{mass matrix}.  
+A single HMC iteration has three parts:
+
+\begin{enumerate}
+\item \textbf{Momentum refresh.} Start with current state $\theta^{(m)}$.  Draw $\phi \sim \mathcal N(0, M)$.
+\item \textbf{Leapfrog integration.} Update $(\theta, \phi)$ using $L$ leapfrog steps of size $\epsilon$, 
+        alternating between half-steps for $\phi$ using the gradient $\nabla_\theta \log p(\theta \mid y)$ and 
+        full steps for $\theta$.  This simulates Hamiltonian dynamics while approximately preserving the total energy $H(\theta,\phi)$.  
+        In practice we discretize the dynamics using leapfrog steps of size \(\epsilon\)
+\item \textbf{Metropolis correction.} Accept the proposal $(\theta^\ast,\phi^\ast)$
+with probability
+\[
+\alpha = \min\!\Bigg(1,
+\frac{p(\theta^\ast \mid y)p(\phi^\ast)}
+{p(\theta^{(m)} \mid y)p(\phi^{(m)})}\Bigg),
+\]
+otherwise retain the previous state, \(\left(\theta^{m}, \phi^{m}\right)\)
+\end{enumerate}
+
+To illustrate a (very) simple example of this, consider we have the posterior density of one parameter:
+\[
+p(\theta \mid y) \;\propto\; \exp\!\left(-\tfrac{1}{2}\theta^2\right).
+\]
+That is, the posterior is a standard normal distribution,
+$\theta \sim \mathcal N(0,1)$. We want to use HMC to sample from it.
+
+\paragraph{Define the Hamiltonian system}
+The potential energy is
+\[
+U(\theta) = -\log p(\theta \mid y) = \tfrac{1}{2}\theta^2 + \text{const}.
+\]
+Introduce an auxiliary momentum variable $\phi \sim \mathcal N(0,1)$. The kinetic energy is
+\[
+K(\phi) = \tfrac{1}{2}\phi^2,
+\]
+Together, the Hamiltonian is
+\[
+H(\theta,\phi) = U(\theta)+K(\phi) = \tfrac{1}{2}\theta^2+\tfrac{1}{2}\phi^2.
+\]
+This is the Hamiltonian for a harmonic oscillator\cite{taylor_classical_2005}.  This total energy defines the joint distribution
+
+\begin{equation}
+    p(\theta,\phi) \propto \text{exp}[-H\left(\theta,\phi\right)] = p(\theta|y)p(\phi)
+\end{equation}
+
+In other words, the total energy (the Hamiltonian) defines the density of the system.  
+
+\paragraph{Hamilton’s equations}
+\[
+\frac{d\theta}{dt} = \frac{\partial H}{\partial \phi} = \phi,
+\qquad
+\frac{d\phi}{dt} = -\frac{\partial H}{\partial \theta} = -\theta.
+\]
+These dynamics are simple oscillations with solutions
+\[
+\theta(t) = \cos(t), \qquad \phi(t) = -\sin(t),
+\]
+so the trajectory traces circles in the $(\theta,r)$-plane.  
+This is important because the joint density is \(p(\theta,\phi) = p(\theta|y)p(\phi)\).  
+Generally, for inference purposes, we don't care about the momentum parameter \(\phi\); 
+we care about the marginal distribution of \(\theta\):
+
+\begin{equation}
+    p(\theta) = \int p(\theta,\phi)d\phi = p(\theta|y)
+\end{equation}
