@@ -1,7 +1,8 @@
 \subsection{Foundations of the Bayesian Approach}
-Bayesian statistics provides a probabilistic framework for inference, where uncertainty in parameters is expressed via probability distributions. 
+Bayesian statistics provides a probabilistic framework for inference, where uncertainty in parameters is expressed via probability distributions.  
 This contrasts with frequentist statistics, which treats parameters as constant, but unknown with uncertainty coming from the random data generation that humans observe.  
-The central idea of Bayesian inference is that unknown parameters $\theta$ are random variables with a prior probability distribution $p(\theta)$, which encodes beliefs or information before seeing the data. Observed data $y$ are linked to $\theta$ through a likelihood function $p(y \mid \theta)$. 
+The central idea of Bayesian inference is that unknown parameters \(\theta\) are random variables with a prior probability distribution \(p(\theta)\), which encodes beliefs or information before seeing the data.  
+Observed data $y$ are linked to $\theta$ through a likelihood function $p(y \mid \theta)$.  
 Bayes' theorem combines these to yield the posterior distribution:
 
 \[
@@ -11,57 +12,150 @@ Bayes' theorem combines these to yield the posterior distribution:
 \subsection{Prior Distributions}
 The prior $p(\theta)$ at its heart is simply a probability distribution before any data is observed.  
 However, the prior also serves a few different roles.  
-First, intuitively it reflects knowledge, or lack thereof about parameters before data collection.  
+First, intuitively it reflects knowledge, or lack thereof, about parameters before data collection.  
 Practically, it also can act as a form of regularization\footnote{Maybe the wrong word.}, down weighting unlikely parameter values.  
-There may also be structural assumptions passed to the model via the prior: smoothness penalties in non/semi-parametric modelling, or shrinkage priors in higher dimensional regression models.  
+There may also be structural assumptions passed to the model via the prior: smoothness penalties in non/semi-parametric modeling, 
+or shrinkage priors in higher dimensional regression models.  
 Priors can range from noninformative to highly informative.  
-Much work has gone into selecting appropiate priors over the years\cite{jaynes_prior_1968}\cite{van_erp_shrinkage_2019}\cite{kass_selection_1996}.
+Much work has gone into selecting appropriate priors over the years\cite{jaynes_prior_1968}\cite{van_erp_shrinkage_2019}\cite{kass_selection_1996}.
 
 \subsection{The Likelihood Function}
-The likelihood function describes how probable the observed data are for different values of the model parameters. 
-Formally, for \(n\) continuous random variables with a common density function \(f(y \mid \theta)\),\footnote{A similar form is available for discrete random variables by replacing the density with a probability mass function.} the likelihood function is defined as:
+The likelihood function describes how probable the observed data are for different values of the model parameters.  
+Formally, if \(X_1,\dots, X_n\) is an iid sample from a population with pdf/pmf \(f(x|\theta_1,\dots,\theta_k)\), then the likelihood function is\cite{casella_statistical_2002}:
 
-\begin{align}
-\label{bayes:likelihood_func}
-L(y_1, y_2, \dots, y_n|\theta) 
-    &= f(y_1, y_2, \dots, y_n|\theta) \notag\\
-    &= f(y_1 \mid \theta) \times f(y_2 \mid \theta) \times \dots \times f(y_n \mid \theta)
-\end{align}
+\begin{equation}
+    L(\theta|x) = L(\theta_1,\dots,\theta_k|x_1,\dots,x_n)  =  \prod_{i=1}^{n}f(x_i|\theta_1,\dots,\theta_k).
+\end{equation}
 
-\noindent
-where \(L(y_1, y_2, \dots, y_n|\theta)\) is viewed as a function of the parameter vector \(\theta\) for fixed observed data \(y_1, \dots, y_n\)\cite{wackerly_mathematical_2008}. 
-When the observations are assumed independent and identically distributed (i.i.d.), the joint density factorizes into a product of individual densities, as shown above.  
-Sometimes for numerical computation reasons we work with the log of the likelihood function.  
-In practice, the likelihood reflects the statistical model one assumes for the data. 
+In practice, the likelihood reflects the statistical model one assumes for the data.  
 For example, in a Gaussian regression setting, we assume that each observation \(y_i\) is generated from a normal distribution centered at \(x_i^T\beta\) with variance \(\sigma^2\):
-
 \[
 y_i \sim \mathcal{N}(x_i^\top \beta, \sigma^2),
 \]
 
-where \(x_i = (x_{i1},x_{i2},\dots,x_{ip})^T\) is a vector of predictors for observation \(i\) and \(\beta = (\beta_1,\beta_2,\dots,\beta_p)^T\) represents a vector of regression coefficients.  
-In standard regression, the observations are assumed independent.  
-In such case, the likelihood function becomes:
+\noindent
+where \(x_i = (x_{i1},x_{i2},\dots,x_{ip})^T\) is a vector of predictors for observation \(i\) and \(\beta = (\beta_1,\beta_2,\dots,\beta_p)^T\) represents a vector of regression coefficients.  In standard regression, the observations are assumed independent.  In such case, the likelihood function becomes:
 
 \begin{equation}
-    L\left(\beta,\sigma^2|y_1,y_2,\dots,y_n\right) = 
-    \prod_{i=1}^{n}\frac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\left(-\frac{(y_i-x_i^T\beta)^2}{2\sigma^2}\right)
+    L\left(\beta,\sigma^2|y_1,y_2,\dots,y_n\right) = \prod_{i=1}^{n}\frac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\left(-\frac{(y_i-x_i^T\beta)^2}{2\sigma^2}\right)
 \end{equation}
 
-Frequentists would maximize this function with respect to \(\beta\) and \(\sigma^2\) to obtain maximum likelihood estimates and their accompanying confidence intervals.  
-In Bayesian inference, the likelihood plays a central role by translating observed data into evidence about the parameters, and when multiplied by the prior distribution it yields the posterior distribution. 
-Thus, while the prior reflects external knowledge, the likelihood represents the information about a model parameter(s) \(\theta\) carried by the data.
+Frequentists would maximize this function with respect to \(\beta\) and \(\sigma^2\) to obtain maximum likelihood estimates and use their accompanying confidence intervals for inference.  
+In Bayesian inference, the likelihood plays a central role by translating observed data into evidence about the parameters, and when multiplied by the prior distribution it yields the posterior distribution. Thus, while the prior reflects external knowledge, the likelihood represents the information about a model parameter(s) \(\theta\) carried by the data.
 
 \subsection{Posterior Inference}
-The posterior distribution summarizes all knowledge about $\theta$ after observing the data. 
-Point estimates are commonly used to summarize a distribution, and this is no different for the posterior distribution.  
-There are several point estimates one can use, however some common point estimates are the posterior mean, median, or mode.  
-Each of these different point estimates corresponds to minimizing different expected loss function.  
-For example, the posterior mean minimizes the expected squared error loss.  
-The posterior median minimizes the expected absolute error loss.  
-The posterior mode, also known as the maximum a posteri (MAP) estimate minimizes a 0-1 loss.  
+The posterior distribution captures all knowledge about $\theta$ after observing the data. Point estimates are commonly used to summarize a distribution, and this is no different for the posterior distribution.  
+There are several point estimates one can use, however some common point estimates are the posterior mean, median, or mode.  Each of these a different point estimates corresponds to minimizing different expected loss function.  For example, the posterior mean minimizes the expected squared error loss.  The posterior median minimizes the expected absolute error loss.  The posterior mode, also known as the maximum a posteri (MAP) estimate, minimizes a 0-1 loss in some circumstances.  
 
 In terms of interval estimates, credible intervals provide a natural analogue to confidence intervals. 
-One appeal of Bayesian Statistics is that credibility intervals are actual probability statements about a given parameter.  
-The frequentist interpretation of confidence intervals is more tortured; a 95\% confidence interval means that in repeated sampling, the intervals constructed will contain the true parameter \(\theta\)\cite{wackerly_mathematical_2008}.  
-For more complex models, posterior summaries are often computed via Monte Carlo methods.
+One appeal of Bayesian Statistics is that credibility intervals are actual probability statements about a given parameter.  The frequentist interpretation of confidence intervals is more tortured; a 95\% confidence interval means that in repeated sampling, 95\% of the intervals constructed will contain the true parameter \(\theta\)\cite{wackerly_mathematical_2008}.  For more complex models, posterior summaries are often computed via Monte Carlo methods.
+
+\subsection{Computation: MCMC and Beyond}
+Exact posterior distributions are rarely available in closed form outside of conjugate cases, especially in high-dimensional functional data settings.  
+Markov chain Monte Carlo (MCMC) algorithms such as Gibbs sampling and Hamiltonian Monte Carlo (HMC) provide a way to approximate the posterior.
+
+\paragraph{Gibbs Sampling}
+Gibbs sampling is one of the simplest and most widely used MCMC algorithms, most useful when the full conditional distributions of the parameters can be derived in closed form.
+
+Suppose $\theta = (\theta_1, \ldots, \theta_p)$ are the parameters of interest
+with posterior density $p(\theta \mid y)$. The Gibbs sampler constructs a Markov
+chain by iteratively sampling each parameter (or block of parameters) from its
+conditional distribution given the current values of the others:
+\[
+\theta_1^{(m+1)} \sim p(\theta_1 \mid \theta_2^{(m)}, \ldots, \theta_p^{(m)}, y),
+\]
+\[
+\theta_2^{(m+1)} \sim p(\theta_2 \mid \theta_1^{(m+1)}, \theta_3^{(m)}, \ldots, \theta_p^{(m)}, y),
+\]
+\[
+\vdots
+\]
+\[
+\theta_p^{(m+1)} \sim p(\theta_p \mid \theta_1^{(m+1)}, \ldots, \theta_{p-1}^{(m+1)}, y).
+\]
+
+After many iterations and under certain regularity conditions, the chain $\{\theta^{(m)}\}$ converges in distribution to the joint posterior $p(\theta \mid y)$\cite{gelman_bayesian_2013}.  
+To illustrate, consider the simple Bayesian linear regression model with one predictor:
+\[
+y_i \mid \beta, \sigma^2 \sim \mathcal N(x_i \beta, \sigma^2), 
+\quad i=1,\dots,n,
+\]
+with priors
+\[
+\beta \sim \mathcal N(0, \tau^2),
+\qquad
+\sigma^2 \sim \mathrm{Inverse\text{-}Gamma}(a,b).
+\]
+
+\noindent
+where \(\tau^2 = \frac{1}{\sigma^2}\) is the precision.
+
+This prior--likelihood pair yields a closed-form posterior for \((\beta, \sigma^2)\).  
+If the prior distribution for \(\beta\) specifies a specific \(\tau^2\), the model is conjugate, and the joint posterior \(p(\beta, \sigma^2 \mid y)\) is a Normal--Inverse--Gamma distribution\cite{murphy_conjugate_2007}.  
+If not, the model is not strictly conjugate, but there are closed form expressions for the posterior distributions as shown here:
+
+\[
+\beta \mid \sigma^2, y \;\sim\;
+\mathcal N\!\left(
+\frac{\tau^2 \sum_{i=1}^n x_i y_i}{\sigma^2 + \tau^2 \sum_{i=1}^n x_i^2},\;\;
+\frac{\tau^2 \sigma^2}{\sigma^2 + \tau^2 \sum_{i=1}^n x_i^2}
+\right),
+\]
+\[
+\sigma^2 \mid \beta, y \;\sim\;
+\mathrm{Inverse\text{-}Gamma}\!\left(
+a + \tfrac{n}{2},\;\;
+b + \tfrac{1}{2}\sum_{i=1}^n (y_i - x_i\beta)^2
+\right).
+\]
+
+The Gibbs sampler alternates between these updates:
+\[
+\beta^{(m+1)} \sim p(\beta \mid \sigma^{2(m)}, y),
+\qquad
+\sigma^{2(m+1)} \sim p(\sigma^2 \mid \beta^{(m+1)}, y).
+\]
+
+After discarding a burn-in period, the draws arise
+$\{(\beta^{(m)}, \sigma^{2(m)})\}_{m=1}^M$ approximately from the joint posterior.
+
+\paragraph{Hamiltonian Monte Carlo (HMC)}
+Traditional MCMC methods such as Gibbs and Metropolis-Hastings sampling often suffer from
+random-walk behavior, making them inefficient in high dimensions\cite{gelman_bayesian_2013}.  
+Random-walk behavior refers to the tendency of these algorithms to explore the parameter space through a series of small, local moves, causing successive samples to be highly correlated.  
+Methods exist to remove this strong correlation, but as a result, the chain meanders slowly through the posterior distribution, leading to poor mixing and requiring many iterations to adequately explore the target space.  
+Hamiltonian Monte Carlo is an MCMC method designed to sample efficiently from complex, high-dimensional posterior distributions by using Hamiltonian physics to avoid random walk behavior\cite{betancourt_conceptual_2017}.  
+
+Central to HMC is the idea of the Hamiltonian, which requires a brief review of physics.  
+In classical mechanics, there are two main types of energy: potential, often associated with position, and kinetic, associated with motion.  
+As an example, a baseball held from my outstretched hands over the side of a building has potential energy by virtue of its height above the ground.  
+However it's stationary, meaning no motion and no kinetic energy.  
+As soon as I drop the baseball, it begins to move, accelerated by gravitational forces and the ball's potential energy changes into kinetic energy.  
+In a closed system (for example, ignoring air resistance), energy is conserved; potential energy can turn into kinetic and vice versa, but the total amount of energy cannot increase or decrease without some outside influence.  
+This is known as the conservation of energy principle.  In other words, the total energy of a system is important.  
+How do we measure this?  In classical physics, via the Hamiltonian; 
+The Hamiltonian is simply the total energy of some system\cite{taylor_alan_2015}.  
+Mathematically, this looks like:
+
+\begin{equation}
+    H = K + U
+\end{equation}
+
+where \(H\) is the Hamiltonian, \(K\) is the kinetic energy, and \(U\) is the potential energy.  
+This Hamiltonian gives us the tools to completely describe a systems state.  
+But we need equations of motion to describe how changes in potential energy impact kinetic energy and vice verse.  
+We have those equations as well.  
+Traditionally, certain notation is used that deserves some explanation.  \(q\) denotes a particle's position.  
+Continuing our baseball example, one can think of this as the height of the baseball above the ground.  
+\(p\) denotes the momentum of a particle\footnote{The momentum of a particle is related to its kinetic energy.  
+Momentum is defined as \(p=mv\), where \(m\) is mass, and \(v\) is velocity.  Kinetic energy is defined is T = \(\frac{1}{2}mv^2\).  
+Rearranging the equation for momentum, we get \(v=\frac{p}{m}\), and we can insert this into the equation for \(T\) to get \(T = \frac{p^2}{2m}\).}.  
+These two quantities describes a system's state at any moment.  The following equations are Hamilton's equations of motion:
+
+\begin{equation}
+    \frac{\mathrm{d}q}{\mathrm{d}t} = 
+    \frac{\partial H}{\partial p},
+    \quad \text{and} \quad
+    \frac{\mathrm{d}p}{\mathrm{d}t} = 
+    -\frac{\partial H}{\partial q}.
+\end{equation}
