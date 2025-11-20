@@ -5,14 +5,19 @@ This has led to the development and rise of functional data analysis (FDA).
 FDA extends classical statistical models to handle infinitely dimensional data.  
 FDA represents each observational unit, be it a growth curve, temperature history, or kinematic motion, as a smooth function defined on an interval.  
 Modeling these data as functions has several attractive characteristics, including allowing for the ability to capture nonlinear behaviors naturally, but it also presents several challenges.  
-These challenges include how to represent an infinitely dimensional object finitely, a tradeoff between smoothness and sparsity, as well as how to handle covariance structures.
+These challenges include how to represent an infinitely dimensional object finitely, a tradeoff between smoothness and sparsity, as well as how to handle covariance structures.  
+
 There are many problems that appear when this topic is presented.  
-One of these is functional regression, in particular, function on scalar regression (FoS).  In FoS models, the response, or dependent variable, is a function rather than a scalar.  
-The goal of FoS models is to capture the relationship between entire functions.  
+One of these is functional regression, in particular, function on scalar regression (FoS).  
+In FoS models, the response, or dependent variable, is a function rather than a scalar.  
+The goal of FoS models is to capture the the effect of predictors on entire functions.  
 Some examples of this may be the modeling of a kinematic trajectory (presumed a curve) conditional on various covariates or modeling growth curves in response to environmental factors.  
 
 My work builds on existing foundations to estimate coefficient curves in FoS regression.  
 In Section 2, I will present a partial history of statistics, detailing significant developments and how they laid the foundation for functional data analysis.  
-In Section 3, I provide some background on Bayesian methods specifically.  
-Section 4 presents a specific existing model that serves as a building block for future methods.  
-Section 5 presents the multivariate model, allowing for the estimation of multivariate functional outcomes.   
+In Section 3, I provide some background on Bayesian methods specifically. 
+Section 4 discusses literature for functional mixed models, while section 5 presents the so called \say{foundational} model that Goldsmith and I build upon.  
+Section 6 presents both Goldsmith's corresponding  multivariate model for two dimensions and a modified version for three, both of which allow for the estimation of both fixed and random effects.  
+Also in this section is a discussion on ways to improve a Hamiltonian Monte Carlo sampler.  
+Sections 7 and 8 discuss simulation studies, both the creation of simulated components and the results, while sections 9 and 10 cover real world results from a collection of data of jaw kinematics.  
+Finally, sections 11 and 12 will cover potential future work, as well offer a brief conclusion to this work, while appendices will go over relevant materials in more detail.
