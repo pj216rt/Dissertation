@@ -1,0 +1,60 @@
+In his paper, Goldsmith describes a possible extension to bivariate data.  
+He concatenates data and spline coefficient matrices.  
+Specifically, let \(Y(t) = \left[Y_1(t),Y_2(t)\right]\) and let us express this in matrix form as \(Y = [Y_1,Y_2]\), 
+where \(Y_i, i\in(1,2)\) corresponds to functional outcomes in the X and Y dimensions respectively concatenated together by 
+column, \(B_W^T = [B_{1,W}^T, B_{2,W}^T]\), corresponds to the fixed effect spline coefficients in two dimensions, 
+and \(B_Z^T = [B_{1,Z}^T, B_{2,Z}^T]\) corresponds to the random effect spline coefficients in two dimensions.  
+Taking advantage of Kronecker product structure\footnote{See appendix},  Goldsmith writes out the following model:
+
+\begin{equation}
+    \begin{split}
+        Y = ZB_Z^T\left(I_2 \otimes\Theta^T\right) + \epsilon\\
+        \epsilon\sim N[0, \Sigma\otimes I_n]\\
+        \Sigma \sim IW[v, \Psi]\\
+        B_{Z,i} \sim N[B_w \boldsymbol{w}_i^T, \text{diag}\left(\sigma_{1,Z}^2, \sigma_{2,Z}^2\right)\otimes P^{-1}]\quad \text{for} \quad i = 1,\dots, I\\
+        \sigma_{m,Z}^2 \sim IG[a_{m,Z}, b_{m,Z}]\quad \text{for} \quad m = 1,2\\
+        B_{W,i} \sim N[0, \text{diag}\left(\sigma_{1,W_{k}}^2, \sigma_{2,W_{k}}^2\right)\otimes P^{-1}]\\
+        \sigma_{m,W_{k}}^2 \sim IG[a_{m,W_{k]}}, b_{m,W_{k}}]\quad \text{for} \quad m = 1,2 \quad\text{and} \quad k = 1,\dots, p.
+    \end{split}
+\end{equation}
+
+Note how fixed and random effects in each dimension are assumed independent.  
+This bivariate model allows for modeling position curves in two dimensions concurrently.  
+This bivariate model explicitly models correlation between the X and Y position curves through the level 1 residual 
+covariance matrix; the X and Y dimensions are independent in both the fixed and random effects.      
+
+Goldsmith remarks \say{Similar extensions to three or more curves \ldots proceed similarly}.  
+We continue to follow Goldsmith's lead, giving the following model for three dimensional functional data:
+
+\begin{equation}
+    \begin{split}
+        Y = ZB_Z^T\left(I_3 \otimes\Theta^T\right) + \epsilon\\
+        \epsilon\sim N[0, \Sigma\otimes I_n]\\
+        \Sigma \sim IW[v, \Psi]\\
+        B_{Z,i} \sim N[B_w \boldsymbol{w}_i^T, \text{diag}\left(\sigma_{1,Z}^2, \sigma_{2,Z}^2, \sigma_{2,Z}^3\right)\otimes P^{-1}]\quad \text{for} \quad i = 1,\dots, I\\
+        \sigma_{m,Z}^2 \sim IG[a_{m,Z}, b_{m,Z}]\quad \text{for} \quad m = 1,2, 3\\
+        B_{W,i} \sim N[0, \text{diag}\left(\sigma_{1,W_{k}}^2, \sigma_{2,W_{k}}^2, \sigma_{3,W_{k}}^2\right)\otimes P^{-1}]\\
+        \sigma_{m,W_{k}}^2 \sim IG[a_{m,W_{k]}}, b_{m,W_{k}}]\quad \text{for} \quad m = 1,2, 3 \quad\text{and} \quad k = 1,\dots, p
+    \end{split}
+\end{equation}
+
+As with the bivariate model, fixed and random effects in each dimension are assumed to be independent.  
+This independence assumption is important for two main reasons, one conceptual and another computational.  
+First, assuming independence simplifes the covariance term in \(B_{Z,i}\) and \(B_{W,i}\).  
+Without this independence assumption, we would need to model the correlation between X and Y fixed and random effect spline 
+coefficients\footnote{We do this in the following model.}.  Secondly, assuming independence gives clear intution to the level 1 
+residual covariance matrix:  it describes the manner in which the X and Y trajectories vary, after accounting for 
+fixed and random effects\footnote{I think technically this would be the cross-variance.}. This trivariate model will serve 
+as our first attempt at a trivariate model.  
+
+\subsection{Concerns and Resulting Alternative Model}
+Goldsmith's 2016 paper heavily motivates this work.  In his model (and its two dimensional extension), 
+he places an inverse-Wishart prior on the level 1 covariance structure.  There is one cause for concern with this: 
+for observations in three dimensions with each dimension being observed across a grid of \(D\), the level 1 covariance matrix 
+would have to be \(3*D\times 3*D\).  In the case of \(D=100\), that would mean that our level 1 covariance matrix would be 
+\(300\times300\).  If the level 1 covariance matrix is modeled as inverse Wishart, then as the dimension of this matrix increases, 
+the degrees of freedom of the inverse Wishart also must increase for the distribution to remain proper. 
+A result of this is that the Inverse Wishart \(IW\left(n\boldsymbol{S} + \Psi, n + v\right)\) posterior distribution tends to 
+concentrate more tightly around its prior expected value: \(\Psi/{\left(v-p-1\right)}\)\cite{zhang_note_2021}. When the scale matrix is 
+the identity matrix, this expected value is proportional to the identity matrix itself; using an Inverse Wishart prior with an identity 
+scale matrix can lead to over-shrinkage of the estimated covariance matrix towards the identity matrix.
