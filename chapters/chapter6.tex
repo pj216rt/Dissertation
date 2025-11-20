@@ -1,0 +1,31 @@
+The paper that precipitated this work is Goldsmith\cite{goldsmith_assessing_2016}.  
+In it, he illustrates a method to model penalized function-on-scalar regression, 
+permitting estimation of population-level fixed effects, subject-level random effects, and residual covariance using penalized splines.  
+The working assumption for this model is that for subjects \(i=1,\dots, I\) and replications \(j=1,\dots, J_i\), \(n=\sum_i J_i\) 
+functional observations recorded in one-dimensional space are available.  Each function is defined over a common domain 
+\(\mathcal{T} \subset \mathbf{R}\) and is observed on a discrete grid of \(D\) evaluation points \(\{t_1, \dots, t_D\}\).  
+This model, in its most basic form is written as:
+
+\begin{equation}
+\label{functional_mixed}
+    \boldsymbol{y}_{ij} = \boldsymbol{\omega}_i\boldsymbol{\beta} + \boldsymbol{z}_{i}\boldsymbol{b} + \boldsymbol{\epsilon}_{ij}.
+\end{equation}
+
+\noindent
+This is simply a standard linear mixed effects model: \(\boldsymbol{y_{ij}}\) denotes a vector of functional outcomes for subject 
+\(\emph{i}\) and replication \(\emph{j}\), \(\boldsymbol{\omega_i}\) denotes subject specific covariates, \(\boldsymbol{\beta}\) 
+denotes the fixed effect coefficient, \(\boldsymbol{z_i}\) denotes a design matrix for subjects' random effects, \(\boldsymbol{b}\) 
+denotes random effect coefficients.  
+The key difference from the longitudinal mixed effects model \eqref{fda:lmm} is that the fixed and random effects in 
+\eqref{functional_mixed}, \(\boldsymbol{\beta}\) and \(\boldsymbol{b}\), are multivariate functions.
+
+Following the work of Silverman\cite{ramsay_functional_2005}, Reiss\cite{reiss_fast_2010}, 
+and Goldsmith\cite{goldsmith_assessing_2016}, we write \(\boldsymbol{\beta}\) and \(\boldsymbol{b}\) using spline expansions.  
+They define $\boldsymbol{\beta} = \left[\Theta B_w\right]^T$ and $\boldsymbol{b} = \left[\Theta B_Z\right]^T$, where \(\Theta\) 
+is the basis function matrix of dimensions \(D\times K_{\theta}\), \(K_\theta\) is the number of basis functions used, \(B_w\) 
+is a matrix containing basis coefficients for \(\boldsymbol{\beta}\), and \(B_z\) is a matrix containing basis coefficients for 
+\(\boldsymbol{b}\).  For a univariate model, this provides:
+
+\begin{equation}
+    \boldsymbol{y}_{ij} = \boldsymbol{\omega}_iB_W^T\Theta^T + \boldsymbol{z}_{i}B_Z^T\Theta^T + \boldsymbol{\epsilon}_{ij}.
+\end{equation}
